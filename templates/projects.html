@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}Project List{% endblock title %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+               
+        {% if request.user.is_staff %} 
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Owner Project</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S. no.</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Discription</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in owner_project %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td scope="row"><a href="{{ project.get_absolute_url }}">{{project.name}}</a></td>
+                                    <td>{{project.discription}}</td>
+                                    <td>{{project.start_date}}</td>
+                                    <td>{{project.end_date}}</td>
+                                </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Member Project</h5>
+                            <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">S. no.</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Discription</th>
+                                            <th scope="col">Start Date</th>
+                                            <th scope="col">End Date</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for project in member_project %}
+                                        <tr>
+                                            <th>{{forloop.counter}}</th>
+                                            {% for proj in project %}
+
+                                        
+                                           
+                                            <td scope="row">{{proj.name}}</td>
+                                            <td>{{proj.discription}}</td>
+                                            <td>{{proj.start_date}}</td>
+                                            <td>{{proj.end_date}}</td>
+                                            
+                                        
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                       
+                                    </tbody>
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+{% endblock content %}
+
+{% block js %}{% endblock js %}

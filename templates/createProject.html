@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Project{% endblock title %}
+
+{% block content %}
+<form  data-parsley-validate class="form-horizontal form-label-left">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Name</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="form_name" class="form-control col-md-7 col-xs-12">
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12" id="id_error_name"></div>
+        </div>
+        <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Description</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    
+                    <textarea class="form-control" rows="5" id="form_description" class="form-control col-md-7 col-xs-12"></textarea>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12" id="id_error_description"></div>
+        </div>
+        
+      
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Start Date</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="date" id="form_start_date" class="form-control col-md-7 col-xs-12">
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12" id="id_error_start_date"></div>
+        </div>
+        <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">End Date</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="date" id="form_end_date" class="form-control col-md-7 col-xs-12">
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12" id="id_error_end_date"></div>
+            </div>
+        
+       
+        
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <button class="btn btn-primary" type="reset" >Reset</button>
+                <input type="button" class="btn btn-success" id="btn_save_project" value="Confirm">
+            </div>
+        </div>
+    </form>
+
+    {% endblock content %}
+
+    {% block js %}
+    <script>
+
+       
+
+       
+        $('#btn_save_project').on('click', function(){
+          
+            
+            var name = $('#form_name').val()
+            var description = $('#form_description').val()
+            var start_date = $('#form_start_date').val()
+            var end_date = $('#form_end_date').val()
+            $.ajax({
+                type: 'POST',
+                url: '{% url "save_project" %}',
+                data:{
+                    'name': name,
+                    'description': description,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+           
+                success: function(data){
+                    if(data.changes == '1'){
+                        alert('Saved record')
+                        location.reload()
+                    }
+                    else{
+                        alert('All Fileds required!!')
+                    }
+                   
+                }
+            })
+
+
+        })
+  
+    </script>
+    
+    {% endblock js %}

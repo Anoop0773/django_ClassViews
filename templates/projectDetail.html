@@ -1,0 +1,579 @@
+{% extends "layout.html" %}
+
+{% block title %}Project Detail{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+               
+        <div class="row">
+
+                     <div class="col">
+                        <div class="card">
+                          <div class="card-body">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskCreateModal">Create Task</button>
+                                <button type="button" class="btn btn-success"  id="btn_edit">Update Project</button>
+                                <button type="button" class="btn btn-danger" id="btn_delete">Delete Project</button>
+                                
+                          </div>
+                        </div>
+                      </div>
+                    
+
+        </div>  
+      
+</div>
+
+<div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Tasks</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">S. no.</th>
+                                <th>Task ID</th>
+                                <th>Name</th>
+                                <th>Assignee</th>
+                                <th>Action</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                            <tr>
+                                <th>{{forloop.counter}}</th>
+                                <td>{{task.pk}}</td>
+                                <td scope="row"><a href="{{ task.get_absolute_url }}">{{task.name}}</a></td>
+                                <td>{{task.assigned_user}}</td>
+                                <td>
+                                   
+                                        <button class="btn btn-primary btn-xs edit_task"  value="{{ task.pk }}">
+                                                Edit
+                                        </button>
+                                  
+                                
+                                    <button class="btn btn-danger btn-xs delete_task"  value="{{ task.pk }}">
+                                     
+                                      Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <!--  Task Create Modal -->
+ <div class="modal" id="taskCreateModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Create Task</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                    <form data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Task Name</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="form_name" class="form-control col-md-7 col-xs-12">
+                                </div>
+                               
+                            </div>
+                            <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Task Description</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        
+                                        <textarea class="form-control" rows="5" id="form_description" class="form-control col-md-7 col-xs-12"></textarea>
+                                    </div>
+                                   
+                            </div>
+
+                            <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">User</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <select id="form_user" class="form-control">
+                                            <option value="">--Select--</option>
+                                            {% for user in users %}
+                                                <option value="{{ user.pk }}">{{ user }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                   
+                                </div>
+                            
+                          
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button class="btn btn-primary" type="reset" >Reset</button>
+                                    <input type="button" class="btn btn-success" id="btn_save_task" value="Confirm">
+                                </div>
+                            </div>
+                        </form>
+             
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+            
+          </div>
+        </div>
+</div>
+<!-- Task Create Modal -->
+
+ <!--  Project Update Modal -->
+ <div class="modal" id="updateProjectModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Create Task</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+
+                <form  data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Name</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="form_update_project_name" class="form-control col-md-7 col-xs-12">
+                            </div>
+                           
+                        </div>
+                        <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    
+                                    <textarea class="form-control" rows="5" id="form_update_project_description" class="form-control col-md-7 col-xs-12"></textarea>
+                                </div>
+                                
+                        </div>
+                        
+                      
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Start Date</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="date" id="form_update_project_start_date" class="form-control col-md-7 col-xs-12">
+                            </div>
+                            
+                        </div>
+                        <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">End Date</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="date" id="form_update_project_end_date" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             
+                        </div>
+                        
+                       
+                        
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <button class="btn btn-primary" type="reset" >Reset</button>
+                                <input type="button" class="btn btn-success" id="btn_update_project" value="Update">
+                            </div>
+                        </div>
+                    </form>
+
+         
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+        
+      </div>
+    </div>
+</div>
+<!-- Project Update Modal -->
+
+ <!--  Project Delete Modal -->
+ <div class="modal" id="deleteProjectModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Project</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                  
+    
+                    <form  data-parsley-validate class="form-horizontal form-label-left">
+                   
+                           
+                            
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button class="btn btn-primary" data-dismiss="modal" >Cancel</button>
+                                    <input type="button" class="btn btn-danger" id="btn_delete_project" value="Yes">
+                                </div>
+                            </div>
+                    </form>
+    
+             
+            </div>
+           
+            
+          </div>
+        </div>
+    </div>
+    <!-- Project Delete Modal -->
+
+
+     <!--  Task Update Modal -->
+ <div class="modal" id="updateTaskModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Create Task</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+    
+                    <form data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Task Name</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="form_update_task_name" class="form-control col-md-7 col-xs-12">
+                                </div>
+                               
+                            </div>
+                            <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Task Description</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        
+                                        <textarea class="form-control" rows="5" id="form_update_task_description" class="form-control col-md-7 col-xs-12"></textarea>
+                                    </div>
+                                   
+                            </div>
+
+                            <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">User</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <select id="form_update_task_user" class="form-control">
+                                            <option value="">--Select--</option>
+                                            {% for user in users %}
+                                                <option value="{{ user.pk }}">{{ user }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                   
+                                </div>
+                            
+                          
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button class="btn btn-primary" type="reset" >Reset</button>
+                                    <input type="button" class="btn btn-success" id="btn_update_task" value="Confirm">
+                                </div>
+                            </div>
+                        </form>
+             
+             
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+            
+          </div>
+        </div>
+    </div>
+    <!-- Task Update Modal -->
+    
+     <!--  Task Delete Modal -->
+     <div class="modal" id="deleteTaskModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+              
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Delete Project</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                
+                <!-- Modal body -->
+                <div class="modal-body">
+    
+                      
+        
+                        <form  data-parsley-validate class="form-horizontal form-label-left">
+                       
+                               
+                                
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <button class="btn btn-primary" data-dismiss="modal" >Cancel</button>
+                                        <input type="button" class="btn btn-danger" id="btn_delete_project" value="Yes">
+                                    </div>
+                                </div>
+                        </form>
+        
+                 
+                </div>
+               
+                
+              </div>
+            </div>
+        </div>
+        <!-- Task Delete Modal -->
+
+
+
+{% endblock content %}
+
+
+
+{% block js %}
+<script>
+
+
+       
+        $('#btn_save_task').on('click', function(){
+
+           
+            var name = $('#form_name').val()
+            var description = $('#form_description').val()
+            var user_pk = $('#form_user').val()
+           
+            
+            $.ajax({
+                type: 'POST',
+                url: '{% url "save_task" %}',
+                data:{
+                    'project_pk' : '{{ object.pk }}',
+                    'name': name,
+                    'description': description,
+                    'user_pk': user_pk,
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+           
+                success: function(data){
+                    if(data.changes == '1'){
+                        alert('Saved record')
+                        location.reload()
+                        
+                    }
+                    else{
+                        alert('All Fileds required!!')
+                    }
+                   
+                }
+            })
+
+
+        })
+
+        $('#btn_edit').on('click', function(){
+            
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "get_project" %}',
+                data:{
+                    'project_pk': '{{ object.pk }}',
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+                success: function(data){
+            
+                    console.log(data.description)
+                   
+                    $('#form_update_project_name').val(data.name)
+                    $('#form_update_project_start_date').val(data.start_date)
+                    $('#form_update_project_end_date').val(data.end_date)
+                    $('#form_update_project_description').val(data.description)
+                   
+                    $('#updateProjectModal').modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                    })
+                }
+            })
+        })
+
+        $('#btn_update_project').on('click', function(){
+          
+            
+            var name = $('#form_update_project_name').val()
+            var description = $('#form_update_project_description').val()
+            var start_date = $('#form_update_project_start_date').val()
+            var end_date = $('#form_update_project_end_date').val()
+            $.ajax({
+                type: 'POST',
+                url: '{% url "save_project" %}',
+                data:{
+                    'project_pk' : '{{ object.pk }}',
+                    'name': name,
+                    'description': description,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+           
+                success: function(data){
+                    if(data.changes == '1'){
+                        alert('Saved record')
+                        location.reload()
+                    }
+                    else{
+                        alert('All Fileds required!!')
+                    }
+                   
+                }
+            })
+
+
+        })
+        $('#btn_delete').on('click', function(){
+
+            $('#deleteProjectModal').modal({
+                backdrop: 'static',
+                keyboard: false,
+            })
+        })
+
+        $('#btn_delete_project').on('click', function(){
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "delete_project" %}',
+                data:{
+                    'project_pk' : '{{ object.pk }}',
+                    
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+           
+                success: function(data){
+                    if(data.changes == '1'){
+                        alert('Record Deleted')
+                        window.location = "{% url 'list_project' %}"; 
+                    }
+                    else{
+                        alert('Cant be delete')
+                    }
+                   
+                }
+            })
+           
+        })
+
+
+        $('.edit_task').on('click', function(){
+            var task_pk = $(this).val()
+           
+           $.ajax({
+                type: 'POST',
+                url: '{% url "get_task" %}',
+                data:{
+                    'task_pk': task_pk,
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+                success: function(data){
+            
+                    console.log(data.description)
+                   
+                    $('#form_update_task_name').val(data.name)
+                    $('#form_update_task_description').val(data.description)
+                    $('#form_update_task_user').val(data.user)
+                    $("#btn_update_task").attr("data", task_pk);
+
+                   
+                    $('#updateTaskModal').modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                    })
+                }
+            })
+            
+        })
+
+        $('#btn_update_task').on('click', function(){
+          
+            
+            var name = $('#form_update_task_name').val()
+            var description = $('#form_update_task_description').val()
+            var user_pk = $('#form_update_task_user').val()
+            var task_pk = $("#btn_update_task").attr("data")
+          
+          
+            $.ajax({
+                type: 'POST',
+                url: '{% url "save_task" %}',
+                data:{
+                    'task_pk' : task_pk,
+                    'project_pk' : '{{ object.pk }}',
+                    'name': name,
+                    'description': description,
+                    'user_pk': user_pk,
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+           
+                success: function(data){
+                    if(data.changes == '1'){
+                        alert('Saved record')
+                        location.reload()
+                    }
+                    else{
+                        alert('All Fileds required!!')
+                    }
+                   
+                }
+            })
+
+
+        })
+
+        $('.delete_task').on('click', function(){
+            var task_pk = $(this).val()
+           
+            $.ajax({
+                type: 'POST',
+                url: '{% url "delete_task" %}',
+                data:{
+                    'task_pk' : task_pk,
+                    
+                    'csrfmiddlewaretoken':'{{ csrf_token }}'
+                },
+           
+                success: function(data){
+                    if(data.changes == '1'){
+                        alert('Task Deleted')
+                        location.reload();
+                    }
+                    else{
+                        alert('Cant be delete')
+                    }
+                   
+                }
+            })
+           
+        })
+    </script>
+{% endblock js %}
